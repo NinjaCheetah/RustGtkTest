@@ -1,5 +1,6 @@
-use adw::prelude::*;
+use std::sync::{Arc, Mutex};
 
+use adw::prelude::*;
 use adw::{ActionRow, Application, ApplicationWindow, HeaderBar};
 use adw::gtk::{Box, ListBox, Orientation, SelectionMode};
 
@@ -8,11 +9,27 @@ fn main() {
         .application_id("com.example.FirstAdwaitaApp")
         .build();
 
+    //let mut count = 0;
+    let count = Arc::new(Mutex::new(0));
+
     application.connect_activate(|app| {
         // ActionRows are only available in Adwaita
+        let countRow = ActionRow::builder()
+            .activatable(false)
+            .title(format!("Count: {:?}", count))
+            .build();
         let row = ActionRow::builder()
             .activatable(true)
-            .title("Click me")
+            .title("Increase")
+            .build();
+        row.connect_activated(|_| {
+            eprintln!("Clicked!");
+            let mut count = count.lock().unwrap();
+            *count += 1;
+        });
+        let row2 = ActionRow::builder()
+            .activatable(true)
+            .title("Decrease")
             .build();
         row.connect_activated(|_| {
             eprintln!("Clicked!");
@@ -27,7 +44,9 @@ fn main() {
             // makes the list look nicer
             .css_classes(vec![String::from("boxed-list")])
             .build();
+        list.append(&countRow);
         list.append(&row);
+        list.append(&row2);
 
         // Combine the content in a box
         let content = Box::new(Orientation::Vertical, 0);

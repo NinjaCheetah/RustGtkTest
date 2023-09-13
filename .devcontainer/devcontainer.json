@@ -24,6 +24,8 @@
         "ghcr.io/devcontainers/features/rust": {
             "version": "latest"
         },
-		"ghcr.io/devcontainers/features/desktop-lite:1": {}
+		"ghcr.io/devcontainers/features/desktop-lite": {
+			"version": "latest"
+		}
 	}
 }
